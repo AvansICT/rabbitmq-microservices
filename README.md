@@ -1,74 +1,54 @@
 # RabbitMQ Microservices
 
-This project serves as an example of a microservices architecture where services communicate with each other through RabbitMQ, utilizing Redis as the primary database. All services are implemented in Node.js.
+This repository demonstrates a small microservices setup built with Node.js,
+RabbitMQ, and Redis. The services now run together with Docker Compose.
 
 ## Services
 
-### 1. Web Service
+- `web`: Browser-facing UI on `http://localhost:3000`
+- `api`: HTTP API on `http://localhost:4000`
+- `api-worker`: Background worker that stores results in Redis
+- `special-worker`: Background worker that transforms queued jobs
+- `redis`: Shared data store
+- `rabbitmq`: Message broker with management UI on `http://localhost:15672`
 
-The Web Service acts as the entry point for client requests. It handles incoming HTTP requests, processes them, and delegates tasks to other services if necessary.
+## Run The Stack
 
-### 2. API Service
+1. Start everything from the repository root:
 
-The API Service exposes various endpoints for client applications to interact with the system. It communicates with other services to fulfill these requests and manages the overall business logic of the application.
-
-### 3. API Worker Service
-
-The API Worker Service performs background tasks related to API requests. It offloads long-running or resource-intensive tasks from the API Service, ensuring the responsiveness of the system to incoming requests.
-
-### 4. Special Worker Service
-
-The Special Worker Service handles specialized tasks within the system that require dedicated processing. It communicates with other services via RabbitMQ to perform its duties efficiently.
-
-## Technologies Used
-
-- **Node.js**: All services are implemented using Node.js, a popular runtime for building scalable and high-performance applications.
-- **RabbitMQ**: RabbitMQ is utilized as the message broker to enable communication between microservices in a decoupled and asynchronous manner.
-- **Redis**: Redis serves as the primary database for storing and managing data across services. It provides fast in-memory data storage and retrieval, ideal for microservices architectures.
-
-## Setup Instructions
-
-1. **Clone the Repository**: Clone the rabbitmq-microservices repository to your local machine.
-
-    ```
-    git clone https://github.com/glenndehaan/rabbitmq-microservices.git
+    ```powershell
+    docker compose up --build
     ```
 
-2. **Install Dependencies**: Navigate to each service's directory (web, api, api-worker, special-worker) and install dependencies using npm.
+2. Open the web app in your browser:
 
-    ```
-    cd web
-    npm install
-    ```
-
-   Repeat this step for each service.
-
-3. **Start Docker Containers**: Start the RabbitMQ and Redis services using Docker Compose.
-
-    ```
-    docker-compose up -d
+    ```text
+    http://localhost:3000
     ```
 
-   This command will start the RabbitMQ and Redis containers in the background.
+3. Optional: open the RabbitMQ management UI and log in with the default guest
+   credentials:
 
-4. **Start Services**: Start each service by running the following command in each service directory:
-
+    ```text
+    http://localhost:15672
     ```
-    npm start
-    ```
 
-5. **Test the Application**: Test the functionality of the microservices by opening the Web Service page and verifying that the expected behavior is observed across the system.
+## How It Works
 
-## RabbitMQ Management Interface
+- `web` sends jobs to RabbitMQ.
+- `special-worker` consumes the job, processes it, and publishes the result
+  back.
+- `api-worker` stores the final result in Redis.
+- `api` exposes the HTTP endpoint used to retrieve stored job results.
 
-The RabbitMQ management interface provides a web-based tool for monitoring and managing RabbitMQ, including queues, exchanges, and connections. Here's how to access it:
+## Notes
 
-1. **Access the Interface**: Open a web browser and navigate to [http://localhost:15672](http://localhost:15672).
-
-2. **Log In**: Use the following default credentials to log in:
-    - Username: guest
-    - Password: guest
+- The containers are configured to talk to each other through Compose service
+  names.
+- If you change ports or broker settings, update `docker-compose.yml` and the
+  service environment variables together.
 
 ## License
 
 MIT
+

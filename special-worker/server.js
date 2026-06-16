@@ -3,6 +3,8 @@
  */
 const amqp = require("amqplib");
 
+const rabbitmqUrl = process.env.RABBITMQ_URL || "amqp://localhost";
+
 /**
  * Global rabbitmq channel
  */
@@ -12,8 +14,8 @@ let rabbitmqChannel = null;
  * Main application loop
  */
 const run = async () => {
-    const connection = await amqp.connect("amqp://localhost");
-    console.log(`[RabbitMQ] Connected: amqp://localhost`);
+    const connection = await amqp.connect(rabbitmqUrl);
+    console.log(`[RabbitMQ] Connected: ${rabbitmqUrl}`);
     rabbitmqChannel = await connection.createChannel();
     console.log(`[RabbitMQ] Created Channel`);
     await rabbitmqChannel.assertExchange("local_exchange", "direct", {

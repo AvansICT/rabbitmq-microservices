@@ -15,13 +15,17 @@ const amqp = require("amqplib");
  */
 const app = express();
 
+const redisHost = process.env.REDIS_HOST || "127.0.0.1";
+const redisPort = Number(process.env.REDIS_PORT || 6379);
+const rabbitmqUrl = process.env.RABBITMQ_URL || "amqp://localhost";
+
 /**
  * Setup redis
  */
 const redisClient = redis.createClient({
     socket: {
-        host: "127.0.0.1",
-        port: 6379
+        host: redisHost,
+        port: redisPort
     }
 });
 
@@ -108,10 +112,10 @@ app.listen(4000, "0.0.0.0", async () => {
         console.error(e.error);
         process.exit(1);
     });
-    console.log(`[Redis] Connected: 127.0.0.1:6379`);
+    console.log(`[Redis] Connected: ${redisHost}:${redisPort}`);
 
-    const connection = await amqp.connect("amqp://localhost");
-    console.log(`[RabbitMQ] Connected: amqp://localhost`);
+    const connection = await amqp.connect(rabbitmqUrl);
+    console.log(`[RabbitMQ] Connected: ${rabbitmqUrl}`);
 
     rabbitmqChannel = await connection.createChannel();
     console.log(`[RabbitMQ] Created Channel`);
