@@ -1,16 +1,16 @@
 # RabbitMQ Microservices
 
 This repository demonstrates a small microservices setup built with Node.js,
-RabbitMQ, and Redis. The services now run together with Docker Compose.
+RabbitMQ, and Redis. The services run together using Docker Compose.
 
 ## Services
 
-- `web`: Browser-facing UI on `http://localhost:3000`
-- `api`: HTTP API on `http://localhost:4000`
+- `web`: Browser-facing UI on <http://localhost:3000>
+- `api`: HTTP API on <http://localhost:4000>
 - `api-worker`: Background worker that stores results in Redis
 - `special-worker`: Background worker that transforms queued jobs
-- `redis`: Shared data store
-- `rabbitmq`: Message broker with management UI on `http://localhost:15672`
+- `redis`: Shared inmemory data store
+- `rabbitmq`: Message broker with management UI on <http://localhost:15672>
 
 ## Run The Stack
 
@@ -20,18 +20,11 @@ RabbitMQ, and Redis. The services now run together with Docker Compose.
     docker compose up --build
     ```
 
-2. Open the web app in your browser:
+2. Open the web app in your browser: <http://localhost:3000>. Sending a JSON
+   message should result in the same message with reverted keys and values.
 
-    ```text
-    http://localhost:3000
-    ```
-
-3. Optional: open the RabbitMQ management UI and log in with the default guest
-   credentials:
-
-    ```text
-    http://localhost:15672
-    ```
+3. Optional: open the RabbitMQ management UI and log in with the default
+   guest/guest credentials: <http://localhost:15672>
 
 ## How It Works
 
